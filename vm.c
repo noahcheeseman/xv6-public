@@ -392,7 +392,7 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
     return 0;
 }
 
-//mprotect system call makes page table entries only readable, non-writable
+// system call makes page table entries only readable, non-writable
 int
 mprotect(void *addr, int len){
     struct proc *curproc = myproc();
@@ -424,7 +424,7 @@ mprotect(void *addr, int len){
     return 0;
 }
 
-//mprotect system call makes page table entries both readable and writable
+// mprotect system call makes page table entries both readable and writable
 int
 munprotect(void *addr, int len){
     struct proc *curproc = myproc();
@@ -463,4 +463,3 @@ munprotect(void *addr, int len){
 // Blank page.
 //PAGEBREAK!
 // Blank page.
-
