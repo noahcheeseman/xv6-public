@@ -4,6 +4,8 @@
 #include "mmu.h"
 
 
+// note about git, I was commiting originally to Kell repo and had to port files to this
+// that explains the lack of commits
 // assurance test to try mprotect and munprotect
 // guidance from MIT documentation used
 
