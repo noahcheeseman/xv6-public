@@ -392,68 +392,70 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
     return 0;
 }
 
-// system call makes page table entries only readable, non-writable
+//m-protect system call locks page table data to read-only & non-editable (locks)
 int
-mprotect(void *addr, int len){
+mprotect(void *addr, int len) {
     struct proc *curproc = myproc();
-    if(len <= 0){
-        cprintf("\nwrong len\n");
+
+    if (len <= 0) {
         return -1;
     }
-    if((int)(((int) addr) % PGSIZE )  != 0){
-        cprintf("\nwrong addr %p\n", addr);
+    if ((int)(((int) addr) % PGSIZE )  != 0) {
         return -1;
     }
+
     pte_t *pte;
     pte = walkpgdir(curproc->pgdir, addr, 0);
-    if (*pte)
-    {
+
+    if (*pte) {
         int i;
-        for (i = (int) addr; i < ((int) addr + (len) *PGSIZE); i+= PGSIZE)
-        {
+
+        for (i = (int) addr; i < ((int) addr + (len) *PGSIZE); i+= PGSIZE) {
             pte = walkpgdir(curproc->pgdir,(void*) i, 0);
-            if( ((*pte & PTE_U) != 0) && ((*pte & PTE_P) != 0) ){
-                *pte = (*pte) & (~PTE_W) ;
-                cprintf("\nPTR %p:", pte);
+
+            if (((*pte & PTE_U) != 0) && ((*pte & PTE_P) != 0)) {
+                *pte = (*pte) & (~PTE_W);
             } else {
                 return -1;
             }
         }
     }
+
     lcr3(V2P(curproc->pgdir));
     return 0;
 }
 
-// mprotect system call makes page table entries both readable and writable
+//m-unprotect system call unlocks and makes page table readable and editable (unlocks)
 int
-munprotect(void *addr, int len){
+munprotect(void *addr, int len) {
     struct proc *curproc = myproc();
-    if(len <= 0){
-        cprintf("\nwrong len\n");
+
+    if (len <= 0) {
         return -1;
     }
-    if((int)(((int) addr) % PGSIZE )  != 0){
-        cprintf("\nwrong addr %p\n", addr);
+
+    if ((int)(((int) addr) % PGSIZE) != 0) {
         return -1;
     }
+
     pte_t *pte;
     pte = walkpgdir(curproc->pgdir, addr, 0);
-    if (*pte)
-    {
+
+    if (*pte) {
         int i;
-        for (i = (int) addr; i < ((int) addr + (len) *PGSIZE); i+= PGSIZE)
-        {
+
+        for (i = (int) addr; i < ((int) addr + (len) *PGSIZE); i+= PGSIZE) {
             pte = walkpgdir(curproc->pgdir,(void*) i, 0);
-            if( ((*pte & PTE_U) != 0) && ((*pte & PTE_P) != 0) ){
-                *pte = (*pte) | (PTE_W) ;
-                cprintf("\nPTR %p:", pte);
+
+            if (((*pte & PTE_U) != 0) && ((*pte & PTE_P) != 0)) {
+                *pte = (*pte) | (PTE_W);
             } else {
                 return -1;
             }
         }
     }
-    lcr3(V2P(curproc->pgdir));
 
+    lcr3(V2P(curproc->pgdir));
     return 0;
 }
 
