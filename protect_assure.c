@@ -20,16 +20,16 @@ main(int argc, char *argv[])
     int child=fork();
 
     if(child==0){
-        printf(1, "protecting - the value is = %d\n",*start);
+        printf(1, "\n- protecting -\nvalue = %d\n",*start);
         munprotect(start, 1) ;
         *start=5;
-        printf(1, "un-protecting - the value is = %d\n",*start);
+        printf(1, "\n- un-protecting -\nvalue = %d\n",*start);
         exit();
     }
 
     else if(child>0){
         wait();
-        printf(1, "\nbeginning trap assurance test\n");
+        printf(1, "\n- trap assurance test start -\n");
         *start=5;
         printf(1, "\nassurance failure\n");
         exit();

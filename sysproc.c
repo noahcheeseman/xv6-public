@@ -90,22 +90,22 @@ sys_uptime(void)
     return xticks;
 }
 
-// change the protection bits of the page range starting at address and of len pages to be read only
+// m-protect set bits of the table at address and of len pages to be read-only
 int
 sys_mprotect(void){
-    int d;
+    int i;
     int n = 0;
-    if(argint(0, &d)<0 || argint(1, &n)<0)
+    if(argint(0, &i)<0 || argint(1, &n)<0)
         return -1;
-    return mprotect((void *)d,n);
+    return mprotect((void *)i,n);
 }
 
-// sets the region back to both readable and writeable
+// m-unprotect set bits back to read & editable
 int
 sys_munprotect(void){
-    int d;
+    int i;
     int n = 0;
-    if(argint(0, &d)<0 || argint(1, &n)<0)
+    if(argint(0, &i)<0 || argint(1, &n)<0)
         return -1;
-    return munprotect((void *)d,n);
+    return munprotect((void *)i,n);
 }
